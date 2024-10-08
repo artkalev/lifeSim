@@ -26,7 +26,10 @@ export class App{
   constructor(){
 
     this.scene = new Scene();
-    this.renderer = new WebGLRenderer();
+    this.renderer = new WebGLRenderer({
+      preserveDrawingBuffer: true
+    });
+    this.renderer.autoClear = false;
     this.camera = new OrthographicCamera(-1, 1, 1, -1, 0.1, 100.0);
 
     this.conway = new Conway(this.renderer, 512, 512);
@@ -54,7 +57,8 @@ export class App{
     this.renderer.domElement.className = "appCanvas";
 
     // adding mouse interaction to game of life
-    this.renderer.domElement.addEventListener("mousedown", (e:MouseEvent)=>{
+
+    this.renderer.domElement.addEventListener("mousedown", ()=>{
       this.conway.material.uniforms["uMouseDown"].value = 1;
       this.conway.material.needsUpdate = true;
     });
@@ -67,10 +71,28 @@ export class App{
       this.conway.material.needsUpdate = true;
     });
 
-    this.renderer.domElement.addEventListener("mouseup", (e:MouseEvent)=>{
+    this.renderer.domElement.addEventListener("mouseup", ()=>{
       this.conway.material.uniforms["uMouseDown"].value = 0;
       this.conway.material.needsUpdate = true;
     });
+
+
+    // adding touch support to game of life
+    this.renderer.domElement.addEventListener("touchmove", (e:TouchEvent)=>{
+      e.preventDefault();
+      this.conway.material.uniforms["uMouseDown"].value = 1;
+      this.conway.material.uniforms["uMousePos"].value = [
+        (e.touches[0].clientX-16) / (e.target as HTMLCanvasElement).clientWidth,
+        1.0 - (e.touches[0].clientY+16) / (e.target as HTMLCanvasElement).clientHeight
+      ];
+    },{passive:false, capture:true});
+
+    this.renderer.domElement.addEventListener("touchend", ()=>{
+      this.conway.material.uniforms["uMouseDown"].value = 0;
+    },{passive:false});
+
+
+    // resize support
 
     window.addEventListener("resize", ()=>{
       this.resize();

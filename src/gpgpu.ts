@@ -1,7 +1,8 @@
-import { Mesh, NearestFilter, OrthographicCamera, PlaneGeometry, RepeatWrapping, Scene, ShaderMaterial, WebGLRenderer, WebGLRenderTarget } from "three";
+import { Mesh, NearestFilter, NoColorSpace, OrthographicCamera, PlaneGeometry, RepeatWrapping, RGBAFormat, Scene, ShaderMaterial, UnsignedByteType, WebGLRenderer, WebGLRenderTarget } from "three";
 
 const rtGeo = new PlaneGeometry(2, 2, 1, 1);
-const rtCamera = new OrthographicCamera(-1, 1, 1, -1, -1, 1);
+const rtCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 2);
+rtCamera.position.set(0,0,1);
 
 export abstract class GPGPU{
     /** 2 renderTargets that are switched between for reading and writing */
@@ -33,9 +34,20 @@ export abstract class GPGPU{
         this.material.uniforms["uInputTex"] = {value:null};
         this.material.uniforms["uInputTexSize"] = {value:[0,0]};
         this.material.uniforms["uFrameNumber"] = {value:0};
+        this.material.depthTest = false;
         this.renderTargets = [
-            new WebGLRenderTarget(width, height, {magFilter:NearestFilter, minFilter:NearestFilter, wrapS:RepeatWrapping, wrapT:RepeatWrapping }),
-            new WebGLRenderTarget(width, height, {magFilter:NearestFilter, minFilter:NearestFilter, wrapS:RepeatWrapping, wrapT:RepeatWrapping })
+            new WebGLRenderTarget(width, height, {
+                magFilter:NearestFilter, minFilter:NearestFilter, 
+                wrapS:RepeatWrapping, wrapT:RepeatWrapping,
+                type:UnsignedByteType, format:RGBAFormat,
+                colorSpace:NoColorSpace, depthBuffer:false
+            }),
+            new WebGLRenderTarget(width, height, {
+                magFilter:NearestFilter, minFilter:NearestFilter,
+                wrapS:RepeatWrapping, wrapT:RepeatWrapping,
+                type:UnsignedByteType, format:RGBAFormat,
+                colorSpace:NoColorSpace, depthBuffer:false
+            })
         ];
         this.width = width;
         this.height = height;
@@ -67,11 +79,9 @@ export abstract class GPGPU{
     }
 
     render():void{
-        this.renderer.autoClear = false;
         this.renderer.setRenderTarget(this.renderTargets[this.activeRenderTarget]);
         this.renderer.render(this.rtScene, rtCamera);
         this.renderer.setRenderTarget(null);
-        this.renderer.autoClear = true;
     }
 
     /**

@@ -12,20 +12,20 @@
 //      B: ghost trail. 0.0 -> 1.0 trailing pixels that are left behind when cell dies
 //      A: not used
 
-precision highp float;
-
 varying vec2 vUv;
 
 uniform vec4        uRandomVec; // random vec4 value at each frame
 
 uniform sampler2D   uInputTex; // game of life state from previous render
-uniform vec2       uInputTexSize; // state texture size in pixels
+uniform vec2        uInputTexSize; // state texture size in pixels
 
-uniform int         uFrameNumber; // current simulation frame number
+uniform float       uFrameNumber; // current simulation frame number
+
+uniform int         uPlaceRandom; // set 1 to place random pattern on this frame
 
 uniform sampler2D   uPatternTex; // texture containing some game of life patterns
-uniform vec2       uPatternTexTiles; // number of tiles in the texture
-uniform vec2       uPatternTexTileSize; // tile size in pixels
+uniform vec2        uPatternTexTiles; // number of tiles in the texture
+uniform vec2        uPatternTexTileSize; // tile size in pixels
 
 uniform int         uMouseDown; // 1 == mouse button held down
 uniform vec2        uMousePos;  // mouse position in uv space
@@ -150,7 +150,7 @@ void main(){
     vec4 outputState = vec4(0.0);
 
     // first frame renders 0.0 to make sure the buffer is empty
-    if(uFrameNumber > 0){
+    if(uFrameNumber > 0.0){
 
         
 
@@ -169,14 +169,10 @@ void main(){
         }
 
         // simulating age for game of life
-        // only incrementing age every 2 frames
-        // to make cells live longer
-        if(mod(float(uFrameNumber), 2.0) == 0.0){
-            outputState = simulateAge(outputState);
-        }
+        outputState = simulateAge(outputState);
 
         // placing a random pattern tile periodically
-        if(mod(float(uFrameNumber), 30.0) == 0.0){
+        if(uPlaceRandom == 1){
             vec4 R = uRandomVec;
             vec2 pos = R.xy; // position where to place the pattern ( does not need to be pixel perfect. nearest filter will snap correctly )
             outputState = placeRandomPattern(outputState, vUv, pos);

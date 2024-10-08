@@ -8,8 +8,6 @@
 // state data is packed as vec2 into the unsigned byte RGBA
 // to increase simulation accuracy.
 
-precision highp float;
-
 uniform int         uOnlyDiffuse; // only applies wave diffusion if set to 1
 
 uniform sampler2D   uInputTex; // packed input state 

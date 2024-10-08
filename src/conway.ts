@@ -3,7 +3,7 @@ import conwayVert from './shaders/basic.vert?raw';
 import conwaySimFrag from './shaders/conwaySim.frag?raw';
 import patternTexUrl from './resources/patterns.png';
 
-import { NearestFilter, ShaderMaterial, Texture, TextureLoader, WebGLRenderer } from "three";
+import { NearestFilter, RepeatWrapping, ShaderMaterial, Texture, TextureLoader, WebGLRenderer } from "three";
 
 export class Conway extends GPGPU{
     textureLoader : TextureLoader;
@@ -28,6 +28,7 @@ export class Conway extends GPGPU{
             uniforms:{
                 "uRandomVec":{value:[0.0, 0.0, 0.0, 0.0]},
                 "uFrameNumber":{value:0},
+                "uPlaceRandom":{value:0},
                 "uPatternTex":{value:null},
                 "uPatternTexTiles":{value:[16, 1]},
                 "uPatternTexTileSize":{value:[16,16]},
@@ -42,15 +43,24 @@ export class Conway extends GPGPU{
         // pattern texture containing 16 game of life
         // moving patterns
         this.textureLoader = new TextureLoader();
-        this.texPatterns = this.textureLoader.load(patternTexUrl);
-        this.texPatterns.magFilter = NearestFilter;
-        this.texPatterns.minFilter = NearestFilter;
+        this.texPatterns = this.textureLoader.load(patternTexUrl, (data)=>{
+            this.material.uniforms["uPatternTex"].value = data;
+            this.texPatterns.needsUpdate = true;
+            this.material.needsUpdate = true;
+            this.texPatterns.magFilter = NearestFilter;
+            this.texPatterns.minFilter = NearestFilter;
+            this.texPatterns.wrapS = RepeatWrapping;
+            this.texPatterns.wrapT = RepeatWrapping;
+        });
+        
 
-        this.material.uniforms["uPatternTex"].value = this.texPatterns;
+        
+        this.material.needsUpdate = true;
     }
 
     setupUniforms(): void {
         // supplying random vec4 for the shader at every frame
+        this.material.uniforms["uPlaceRandom"].value = this.frameNumber % 30 == 0 ? 1 : 0;
         this.material.uniforms["uRandomVec"].value = [Math.random(),Math.random(), Math.random(), Math.random()];
     }
 

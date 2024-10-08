@@ -6,8 +6,6 @@
 // renders the input game of life and fluid sim
 // state by coloring and shading.
 
-precision highp float;
-
 uniform sampler2D   uConwayStateTex; // conways game of life state
 uniform sampler2D   uFluidStateTex; // fluid sim state (packed vec2)
 uniform vec2        uTexSize;       // both state textures size

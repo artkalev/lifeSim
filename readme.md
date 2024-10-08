@@ -4,12 +4,16 @@ using framebuffers and shaders.
 
 Built using Vite, Typescript and ThreeJS.
 
+## Live demo
+Can be viewed live at: http://files.tinkering.ee/lifesim/
+
 ## Running locally
     open the terminal
-    clone the repo
-    cd into the directory
+    git clone https://github.com/artkalev/lifeSim.git
+    cd lifeSim
     npm install
     npm run dev
+    navigate to the adress show in the terminal (usually http://localhost:5173/)
 
 ## Description
 Visuals consist of two main parts:
@@ -18,7 +22,7 @@ Visuals consist of two main parts:
 
 The game of life follows classic rules with one exeption. Alive cells also die of old age. This removes static looking patterns after a few frames to clean up the space.
 
-There are some predefined patterns that are scattered into the game world at fixed interval. These are interesting mover patterns that will certainly collide with some other patterns creating chaos.
+There are some predefined patterns that are scattered into the game world at fixed interval. These are interesting mover patterns that will collide with some other patterns creating chaos.
 
 ## interactivity
-Holding down left mouse button adds life patterns at the cursor position in the game world. 
+Life patterns can be "painted" both with mouse on pc or finger on mobile devices.

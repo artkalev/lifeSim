@@ -15,6 +15,8 @@ Can be viewed live at: http://files.tinkering.ee/lifesim/
     npm run dev
     navigate to the adress show in the terminal (usually http://localhost:5173/)
 
+(tested on Ubuntu 24.04 and NodeJS v18.19.1)
+
 ## Description
 Visuals consist of two main parts:
     Conway's Game of Life

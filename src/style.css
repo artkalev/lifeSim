@@ -1,0 +1,17 @@
+body{
+  margin:0px;
+  padding:0px;
+}
+
+.appCanvas{
+  position:absolute;
+  left:0px;
+  top:0px;
+
+  /* ThreeJS also sets style.width/height, forcing css to scale the canvas */
+  width: 100% !important;
+  height: 100% !important;
+
+  /* canvas will be rendered in half resolution, pixelated looks better */
+  image-rendering: pixelated;
+}

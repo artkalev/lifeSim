@@ -9,7 +9,7 @@
 //  state layout in RGBA:
 //      R: 0==dead, 1==alive
 //      G: age 0.0 -> 1.0
-//      B: ghost trail. 0.0 -> 1.0 trailing pixels that are left behind when cell dies
+//      B: not used
 //      A: not used
 
 varying vec2 vUv;
